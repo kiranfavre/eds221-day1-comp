@@ -1,0 +1,57 @@
+---
+title: "EDS221_toolik_chlorophyll"
+format: html
+editor: visual
+execute: 
+    echo: true
+    warning: false
+---
+
+```{r}
+library(tidyverse)
+library(janitor)
+library(here)
+library(skimr)
+```
+
+### Read in data
+
+```{r}
+toolik_chlorophyll <- read_csv(here::here("data",
+                                          "data-raw",
+                                          "toolik_chlorophyll.csv"),
+                               na = c(".")) %>% 
+  clean_names
+
+#na = c(".) means that the values with a . will not be read
+
+#can clean data that way^ or this way below
+#toolik_clean <- toolik_chlorophyll %>% clean_names()
+```
+
+We want to know the data summary:
+
+```{r}
+skim(toolik_chlorophyll)
+```
+
+### Make a graph
+
+```{r}
+chlorophyll_primary_prod_graph <- ggplot(data = toolik_chlorophyll,
+                                   aes(x = active_chl_a_ug_l,
+                                       y = pprod_mg_available_c_m3_d)) +
+  geom_point()
+
+chlorophyll_primary_prod_graph
+```
+
+### Export the graph as a jpg
+
+```{r}
+ggsave( plot = chlorophyll_primary_prod_graph,
+        here("figs", "Chlorophylly_graph.jpg"),
+        width = 8,
+        height = 8,
+        dpi = 100)
+```
